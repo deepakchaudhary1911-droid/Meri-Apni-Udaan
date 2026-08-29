@@ -219,16 +219,27 @@ function renderQuiz(){
  const h=document.createElement('div');h.className='qtag';h.textContent=`QUESTION ${String(currentQuestion+1).padStart(2,'0')}`;
  const title=document.createElement('h2');title.className='qtitle';title.textContent=lang==='hi'?q.qHi:q.qEn;
  card.append(h,title);
- if(q.type==='text'){const input=document.createElement('input');input.className='textInput';input.placeholder=lang==='hi'?'जैसे: Meerut, Lucknow, Indore':'e.g. Meerut, Lucknow, Indore';input.value=answers[q.key]||'';input.addEventListener('input',e=>{answers[q.key]=e.target.value;updateQuizButtons();});card.append(input);}
+ if(q.type==='text'){const input=document.createElement('input');input.className='textInput';input.placeholder=lang==='hi'?'जैसे: Meerut, Lucknow, Indore':'e.g. Meerut, Lucknow, Indore';input.value=answers[q.key]||'';input.addEventListener('input',e=>{answers[q.key]=e.target.value;updateQuizButtons();});input.addEventListener('keydown',e=>{if(e.key==='Enter' && isAnswered(q)){document.getElementById('submitQuiz').click();}});card.append(input);}
  else{q.opts.forEach(([hi,en],i)=>{const b=document.createElement('button');b.type='button';b.className='option';const val=lang==='hi'?hi:en;const selected=(answers[q.key]||[]).includes(i);if(selected)b.classList.add('selected');b.innerHTML=`<span class="dot">${selected?'✓':''}</span><span>${val}</span>`;b.onclick=()=>{if(q.type==='single'){answers[q.key]=[i];}else{const arr=answers[q.key]||[];answers[q.key]=arr.includes(i)?arr.filter(x=>x!==i):[...arr,i];}renderQuiz();};card.append(b);});}
  wrap.append(card);
  document.getElementById('pLabel').textContent=`${currentQuestion+1} / 10`;document.getElementById('pPct').textContent=`${Math.round((currentQuestion+1)*10)}%`;document.getElementById('pBar').style.width=`${(currentQuestion+1)*10}%`;
  const submit=document.getElementById('submitQuiz');submit.disabled=!isAnswered(q);
  submit.innerHTML=currentQuestion===9?(lang==='hi'?'Submit करें और अपना Result देखें →':'Submit & See My Result →'):(lang==='hi'?'अगला सवाल →':'Next question →');
 }
+function updateQuizButtons(){
+ const q=questions[currentQuestion];
+ const submit=document.getElementById('submitQuiz');
+ if(!submit) return;
+ submit.disabled=!isAnswered(q);
+ submit.innerHTML=currentQuestion===9?(lang==='hi'?'Submit करें और अपना Result देखें →':'Submit & See My Result →'):(lang==='hi'?'अगला सवाल →':'Next question →');
+}
 function isAnswered(q){if(q.type==='text')return !!(answers[q.key]||'').trim();return Array.isArray(answers[q.key])&&answers[q.key].length>0;}
 document.getElementById('submitQuiz').addEventListener('click',()=>{
  const q=questions[currentQuestion];
+ if(q.type==='text'){
+   const input=document.querySelector('#quizCards .textInput');
+   if(input) answers[q.key]=(input.value||'').trim();
+ }
  if(!isAnswered(q))return;
  if(currentQuestion<9){currentQuestion++;renderQuiz();window.scrollTo({top:0,behavior:'smooth'});}
  else{localStorage.setItem('meriApniUdaanQuizCompleted','true');show('result');}
