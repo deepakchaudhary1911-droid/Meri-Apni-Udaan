@@ -210,7 +210,34 @@ const questions=[
 ];
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
-function toggleLang(){lang=lang==='hi'?'en':'hi';document.documentElement.lang=lang;document.querySelectorAll('[data-hi]').forEach(el=>{const v=el.getAttribute(lang==='hi'?'data-hi':'data-en');if(v!==null)el.innerHTML=v;});document.querySelectorAll('.lang').forEach(btn=>btn.innerHTML=lang==='hi'?'<span class="on">हिन्दी</span><span>English</span>':'<span>हिन्दी</span><span class="on">English</span>');renderQuiz();}
+function toggleLang(){lang=lang==='hi'?'en':'hi';document.documentElement.lang=lang;document.querySelectorAll('[data-hi]').forEach(el=>{const v=el.getAttribute(lang==='hi'?'data-hi':'data-en');if(v!==null)el.innerHTML=v;});document.querySelectorAll('.lang').forEach(btn=>btn.innerHTML=lang==='hi'?'<span class="on">हिन्दी</span><span>English</span>':'<span>हिन्दी</span><span class="on">English</span>');
+async function submitQuizToBackend() {
+  const response = await fetch(
+    'https://lmdxoaeltfnnwatfzjss.supabase.co/functions/v1/submit-quiz',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        language: lang,
+        location: answers.q5 || '',
+        answers
+      })
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok || !data.success || !data.session_id) {
+    throw new Error(data?.error || 'Quiz submission failed');
+  }
+
+  localStorage.setItem('meriApniUdaanSessionId', data.session_id);
+  return data.session_id;
+}
+
+renderQuiz();}
 
 function renderQuiz(){
  const wrap=document.getElementById('quizCards'); wrap.innerHTML='';
@@ -242,7 +269,21 @@ document.getElementById('submitQuiz').addEventListener('click',()=>{
  }
  if(!isAnswered(q))return;
  if(currentQuestion<9){currentQuestion++;renderQuiz();window.scrollTo({top:0,behavior:'smooth'});}
- else{localStorage.setItem('meriApniUdaanQuizCompleted','true');show('result');}
+ else{
+  submitQuizToBackend()
+    .then(()=>{
+      localStorage.setItem('meriApniUdaanQuizCompleted','true');
+      show('result');
+    })
+    .catch((error)=>{
+      console.error('Quiz submission failed:', error);
+      alert(
+        lang==='hi'
+          ? 'Quiz save नहीं हो पाया। कृपया दोबारा कोशिश करें।'
+          : 'We could not save your quiz. Please try again.'
+      );
+    });
+}
 });
 
 document.getElementById('payPlaceholder').addEventListener('click',()=>{

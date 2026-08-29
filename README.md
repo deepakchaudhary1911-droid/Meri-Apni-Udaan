@@ -1,1 +1,1 @@
-Meri Apni Udaan final static site. Fixed quiz location input navigation bug.
+Meri Apni Udaan final frontend with real quiz submission connected to the Supabase submit-quiz Edge Function. Locked content and visual design preserved.
