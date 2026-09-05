@@ -1,1 +1,4 @@
-Meri Apni Udaan final frontend with real quiz submission connected to the Supabase submit-quiz Edge Function. Locked content and visual design preserved.
+Meri Apni Udaan final GitHub package.
+
+Tested: quiz submission, Razorpay Test Checkout, UPI, and successful test payment.
+Next: deploy supabase-functions/generate-report/index.ts and then run one end-to-end dynamic-report test.
