@@ -1,7 +1,9 @@
-# Meri Apni Udaan — Final Production Frontend
+# Meri Apni Udaan
 
-Final bilingual mobile-first frontend.
+Unified production package for the bilingual Meri Apni Udaan career-roadmap website.
 
-Journey-aware report CTA: users who have not completed the quiz are routed to the quiz; users who have completed it are routed to the result/report screen.
+The website supports: landing → 10-question bilingual quiz → personalized result → ₹49 Razorpay payment → personalized recommendation → 7-page Hindi/English browser-rendered PDF.
 
-Next technical integrations: Razorpay, Supabase, dynamic recommendation engine, dynamic PDF generation, email delivery, analytics / Meta Pixel.
+Navigation is persisted across refresh, the logo returns to Home, quiz Back navigation is available, and the city question (Q5) advances reliably on desktop and mobile.
+
+The browser creates the final PDF so Hindi/Devanagari renders using the browser font engine. Supabase Edge Functions handle quiz submission, Razorpay order/payment verification, and lightweight recommendation scoring.
