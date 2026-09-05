@@ -1,4 +1,5 @@
-Meri Apni Udaan final GitHub package.
+# Meri Apni Udaan — Final Package
 
-Tested: quiz submission, Razorpay Test Checkout, UPI, and successful test payment.
-Next: deploy supabase-functions/generate-report/index.ts and then run one end-to-end dynamic-report test.
+Production-oriented static frontend + Supabase Edge Function.
+
+The final report is generated in the user's browser so Hindi/Devanagari is rendered by the browser itself before the PDF is created.
